@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 app.use(cors())
 app.use(express.json())
 
-const uri = "mongodb+srv://studyMates:cmbpKoBwGcpgtBrU@cluster0.5tck6.mongodb.net/?appName=Cluster0";
+const uri = `mongodb+srv://studyMates:cmbpKoBwGcpgtBrU@cluster0.5tck6.mongodb.net/?appName=Cluster0`;
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -25,6 +25,7 @@ async function run() {
     await client.connect();
     const db = client.db("study_mate")
     const partnersCollection = db.collection("partner")
+    const connectionCollection = db.collection("connection")
 
 
     app.post("/partner", async(req,res)=>{
@@ -33,9 +34,16 @@ async function run() {
       res.send(result)
     })
 
-    app.get("/partner", async(req,res)=>{
-      const result = await partnersCollection.find().toArray()
+    app.get("/partner", async (req,res)=>{
+      const result = await partnersCollection.find().sort({rating : -1}).toArray();
       res.send(result)
+    })
+
+    app.post("/connection", async (req,res)=>{
+      const newConnection = req.body
+      const result = await connectionCollection.insertOne(newConnection)
+      res.send(result)
+
     })
 
 
