@@ -39,6 +39,19 @@ async function run() {
       res.send(result)
     })
 
+    
+
+    app.get("/connection",async(req,res)=>{
+      const result = await connectionCollection.find().toArray()
+      res.send(result)
+    })
+
+    app.get("/connection/:email/:partnerId",async(req,res)=>{
+       const {email,partnerId} = req.params
+       const exist = await connectionCollection.findOne({email,partnerId })
+       res.send({exist : !!exist})
+    })
+
     app.post("/connection", async (req,res)=>{
       const newConnection = req.body
       const result = await connectionCollection.insertOne(newConnection)
