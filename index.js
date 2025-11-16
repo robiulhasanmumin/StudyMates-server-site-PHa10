@@ -66,6 +66,23 @@ async function run() {
       res.send(result)
     })
 
+    app.put("/connection/:id", async(req,res)=>{
+      try{
+        const id = req.params.id
+        const update = req.body
+        const query = {_id: new ObjectId(id)} 
+        const updateConnection = {
+          $set : update
+        }
+        const result = await connectionCollection.updateOne(query, updateConnection)
+        res.send(result)
+      }
+      catch{
+        res.status(401).send({error:true, message:"Update Failed"})
+      }
+
+    })
+
 
 
 
